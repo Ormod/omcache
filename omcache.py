@@ -43,5 +43,20 @@ class OMcache(object):
     def flush_buffers(self, timeout=0):
         return _oc.omcache_flush_buffers(self.omc, timeout)
 
+    def add(self, key, value, expiration=0, flags=0):
+        return _oc.omcache_add(self.omc, key, len(key), value, len(value), expiration, flags)
+
+    def delete(self, key):
+        return _oc.omcache_delete(self.omc, key, len(key))
+
+    def increment(self, key, delta=1, initial=0, expiration=0):
+        return _oc.omcache_increment(self.omc, key, len(key), delta, initial, expiration)
+
+    def decrement(self, key, delta=1, initial=0, expiration=0):
+        return _oc.omcache_decrement(self.omc, key, len(key), delta, initial, expiration)
+
+    def replace(self, key, value, expiration=0, flags=0):
+        return _oc.omcache_replace(self.omc, key, len(key), value, len(value), expiration, flags)
+
     def set(self, key, value, expiration=0, flags=0):
         return _oc.omcache_set(self.omc, key, len(key), value, len(value), expiration, flags)
