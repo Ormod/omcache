@@ -7,7 +7,10 @@ INCLUDEDIR ?= $(PREFIX)/include
 
 STLIB_A = libomcache.a
 SHLIB_SO = libomcache.so
+SHLIB_DYLIB = libomcache.dylib
 SHLIB_V = $(SHLIB_SO).0
+SHLIB_DYLIB_V = $(SHLIB_DYLIB).0
+
 OBJ = omcache.o commands.o dist.o md5.o util.o
 CPPFLAGS ?= -Wall -Wextra
 CFLAGS ?= -g -O2
@@ -18,6 +21,8 @@ WITH_LIBS += -lasyncns
 endif
 
 all: $(SHLIB_SO) $(STLIB_A)
+
+osx: $(SHLIB_DYLIB)
 
 $(STLIB_A): $(OBJ)
 	ar rc $@ $^
@@ -30,6 +35,12 @@ $(SHLIB_V): $(OBJ) symbol.map
 	$(CC) $(LDFLAGS) -shared -fPIC \
 		-Wl,-soname=$(SHLIB_V) -Wl,-version-script=symbol.map \
 		$(filter-out symbol.map,$^) -o $@ -lrt $(WITH_LIBS)
+
+$(SHLIB_DYLIB): $(SHLIB_DYLIB_V)
+	ln -fs $(SHLIB_DYLIB_V) $(SHLIB_DYLIB)
+
+$(SHLIB_DYLIB_V): $(OBJ)
+	$(CC) *.c -dynamiclib $(LDFLAGS) -o $@
 
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(WITH_CFLAGS) -D_GNU_SOURCE=1 -std=gnu99 -fPIC -c $^
@@ -60,7 +71,7 @@ deb:
 	dpkg-buildpackage -uc -us
 
 clean:
-	$(RM) $(STLIB_A) $(SHLIB_V) $(SHLIB_SO) $(OBJ)
+	$(RM) $(STLIB_A) $(SHLIB_V) $(SHLIB_SO) $(SHLIB_DYLIB_V) $(SHLIB_DYLIB) $(OBJ)
 	$(MAKE) -C tests clean
 
 check:

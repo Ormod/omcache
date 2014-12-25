@@ -9,7 +9,12 @@
  *
  */
 
+#if defined( __APPLE__)
+#include "port-osx.h"
+#else
 #include <endian.h>
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>

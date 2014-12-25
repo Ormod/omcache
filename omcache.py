@@ -27,7 +27,10 @@ _ffi.cdef("""
     };
     """)
 _ffi.cdef(open(os.path.join(os.path.dirname(__file__), "omcache_cdef.h")).read())
-_oc = _ffi.dlopen("libomcache.so.0")
+try:
+    _oc = _ffi.dlopen("libomcache.so.0")
+except:
+    _oc = _ffi.dlopen("libomcache.dylib.0")
 
 DELTA_NO_ADD = 0xffffffff
 

@@ -10,7 +10,13 @@
  */
 
 #include <ctype.h>
+
+#if defined( __APPLE__)
+#include "port-osx.h"
+#else
 #include <endian.h>
+#endif
+
 #include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>
